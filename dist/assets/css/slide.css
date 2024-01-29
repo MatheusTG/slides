@@ -1,0 +1,17 @@
+.slides-container {
+  overflow: hidden;
+  margin-top: 40px;
+}
+
+.slides {
+  display: flex;
+  gap: 80px;
+}
+
+.slides li {
+  flex-shrink: 0;
+  width: 80vw;
+  max-width: 800px;
+  border-radius: 40px;
+  overflow: hidden;
+}
