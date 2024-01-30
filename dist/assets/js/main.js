@@ -45,7 +45,7 @@ var Slide = /*#__PURE__*/function () {
     value: function transition(active) {
       if (this.slide) {
         if (active) {
-          this.slide.style.transition = 'transform .3s';
+          this.slide.style.transition = 'transform 0.5s';
         } else {
           this.slide.style.transition = '';
         }
@@ -119,9 +119,13 @@ var Slide = /*#__PURE__*/function () {
   }, {
     key: "activeSlide",
     value: function activeSlide(index) {
-      var position = this.slideArray[index - 1].position;
-      this.moveSlide(position);
-      this.dist.currentPosition = position;
+      var slide = this.slideArray[index - 1];
+      this.moveSlide(slide.position);
+      this.dist.currentPosition = slide.position;
+      this.slideArray.forEach(function (item) {
+        return item.element.classList.remove('active');
+      });
+      slide.element.classList.add('active');
     }
   }, {
     key: "prev",
@@ -160,7 +164,7 @@ var Slide = /*#__PURE__*/function () {
       this.bindEvents();
       this.addSlideEvents();
       this.slidePostion();
-      this.activeSlide(1);
+      this.activeSlide(3);
       this.transition(true);
       return this;
     }

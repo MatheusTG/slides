@@ -1,6 +1,7 @@
 .slide-container {
   overflow: hidden;
   margin-top: 40px;
+  padding: 40px;
 }
 
 .slide {
@@ -19,4 +20,14 @@
   max-width: 800px;
   border-radius: 40px;
   overflow: hidden;
+  transform: scale(0.9);
+  opacity: 0.4;
+  transition: .4s;
+  transform: translate3d(0, 40px, 0);
+  border: 10px solid #111;
+}
+
+.slide li.active {
+  transform: scale(1);
+  opacity: 1;
 }

@@ -32,7 +32,7 @@ export default class Slide {
   transition(active: boolean) {
     if (this.slide) {
       if (active) {
-        this.slide.style.transition = 'transform .3s';
+        this.slide.style.transition = 'transform 0.5s';
       } else {
         this.slide.style.transition = '';
       }
@@ -107,9 +107,12 @@ export default class Slide {
   }
 
   activeSlide(index: number) {
-    const position = this.slideArray[index - 1].position;
-    this.moveSlide(position);
-    this.dist.currentPosition = position;
+    const slide = this.slideArray[index - 1];
+    this.moveSlide(slide.position);
+    this.dist.currentPosition = slide.position;
+
+    this.slideArray.forEach((item) => item.element.classList.remove('active'));
+    slide.element.classList.add('active');
   }
 
   prev() {
@@ -144,7 +147,7 @@ export default class Slide {
     this.bindEvents();
     this.addSlideEvents();
     this.slidePostion();
-    this.activeSlide(1);
+    this.activeSlide(3);
     this.transition(true);
 
     return this;
