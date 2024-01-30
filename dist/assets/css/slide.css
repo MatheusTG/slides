@@ -6,6 +6,11 @@
 .slide {
   display: flex;
   gap: 80px;
+  transition: 0;
+}
+
+.slide:hover {
+  will-change: transform;
 }
 
 .slide li {

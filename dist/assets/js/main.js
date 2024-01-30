@@ -41,6 +41,17 @@ var Slide = /*#__PURE__*/function () {
     this.slideArray = [];
   }
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(Slide, [{
+    key: "transition",
+    value: function transition(active) {
+      if (this.slide) {
+        if (active) {
+          this.slide.style.transition = 'transform .3s';
+        } else {
+          this.slide.style.transition = '';
+        }
+      }
+    }
+  }, {
     key: "moveSlide",
     value: function moveSlide(distX) {
       this.slide.style.transform = "translate3d(".concat(distX, "px, 0, 0)");
@@ -61,6 +72,7 @@ var Slide = /*#__PURE__*/function () {
     key: "onStart",
     value: function onStart(event) {
       var _this$container;
+      this.transition(false);
       if (event instanceof MouseEvent) {
         event.preventDefault();
         this.dist.startX = event.clientX;
@@ -74,11 +86,11 @@ var Slide = /*#__PURE__*/function () {
     key: "onEnd",
     value: function onEnd(event) {
       var _this$container2;
+      this.transition(true);
       this.dist.currentPosition += this.dist.movement;
       var eventType = event instanceof MouseEvent ? 'mousemove' : 'touchmove';
       (_this$container2 = this.container) === null || _this$container2 === void 0 || _this$container2.removeEventListener(eventType, this.onMove);
-      if (this.dist.movement > 80) this.prev();
-      if (this.dist.movement < -80) this.next();
+      if (this.dist.movement > 80) this.prev();else if (this.dist.movement < -80) this.next();else this.activeSlide(this.index.active);
     }
   }, {
     key: "addSlideEvents",
@@ -149,6 +161,7 @@ var Slide = /*#__PURE__*/function () {
       this.addSlideEvents();
       this.slidePostion();
       this.activeSlide(1);
+      this.transition(true);
       return this;
     }
   }]);

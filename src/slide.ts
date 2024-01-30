@@ -29,6 +29,16 @@ export default class Slide {
     this.slideArray = [];
   }
 
+  transition(active: boolean) {
+    if (this.slide) {
+      if (active) {
+        this.slide.style.transition = 'transform .3s';
+      } else {
+        this.slide.style.transition = '';
+      }
+    }
+  }
+
   moveSlide(distX: number) {
     this.slide!.style.transform = `translate3d(${distX}px, 0, 0)`;
   }
@@ -46,6 +56,8 @@ export default class Slide {
   }
 
   onStart(event: Event) {
+    this.transition(false);
+
     if (event instanceof MouseEvent) {
       event.preventDefault();
       this.dist.startX = event.clientX;
@@ -58,6 +70,8 @@ export default class Slide {
   }
 
   onEnd(event: Event) {
+    this.transition(true);
+
     // Determina a posição atual do slide
     this.dist.currentPosition += this.dist.movement;
 
@@ -65,7 +79,8 @@ export default class Slide {
     this.container?.removeEventListener(eventType, this.onMove);
 
     if (this.dist.movement > 80) this.prev();
-    if (this.dist.movement < -80) this.next();
+    else if (this.dist.movement < -80) this.next();
+    else this.activeSlide(this.index.active);
   }
 
   // Adiciona os eventos para o mevimento do slide
@@ -130,6 +145,7 @@ export default class Slide {
     this.addSlideEvents();
     this.slidePostion();
     this.activeSlide(1);
+    this.transition(true);
 
     return this;
   }
