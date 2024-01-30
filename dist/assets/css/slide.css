@@ -1,14 +1,14 @@
-.slides-container {
+.slide-container {
   overflow: hidden;
   margin-top: 40px;
 }
 
-.slides {
+.slide {
   display: flex;
   gap: 80px;
 }
 
-.slides li {
+.slide li {
   flex-shrink: 0;
   width: 80vw;
   max-width: 800px;
