@@ -5,7 +5,7 @@ interface SlideArrayItem {
   position: number;
 }
 
-export default class Slide {
+class Slide {
   container: HTMLElement | null;
   slide: HTMLElement | null;
   dist: {
@@ -172,5 +172,55 @@ export default class Slide {
     this.addResizeEvent();
 
     return this;
+  }
+}
+
+export default class SlideConfig extends Slide {
+  controlsContainer: HTMLElement | null;
+  controls: HTMLElement[] | null;
+  constructor(container: string, slide: string, controls: string) {
+    super(container, slide);
+
+    this.controlsContainer = document.querySelector(controls);
+
+    if (this.controlsContainer) {
+      this.controls = <HTMLElement[]>(
+        Array.from(this.controlsContainer?.children)
+      );
+    } else this.controls = null;
+
+    this.bindControlEvents();
+  }
+
+  connectControls() {
+    if (this.controls) {
+      this.addControlsEvent();
+    }
+  }
+
+  addControlsEvent() {
+    if (this.controls) {
+      this.controls.forEach((element) => {
+        element.addEventListener('click', this.onClickControl);
+        element.addEventListener('touchStart', this.onClickControl);
+      });
+    }
+  }
+
+  onClickControl(event: Event) {
+    const element = event.currentTarget;
+    if (element instanceof HTMLElement) {
+      const index = this.controls?.indexOf(element);
+      if (index !== undefined) {
+        this.activeSlide(index + 1);
+      }
+
+      this.controls?.forEach((control) => control.classList.remove('active'));
+      element.classList.add('active');
+    }
+  }
+
+  bindControlEvents() {
+    this.onClickControl = this.onClickControl.bind(this);
   }
 }

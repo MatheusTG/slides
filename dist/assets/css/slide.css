@@ -1,7 +1,5 @@
 .slide-container {
   overflow: hidden;
-  margin-top: 40px;
-  padding: 40px 0;
 }
 
 .slide {
@@ -30,4 +28,25 @@
 .slide li.active {
   transform: scale(1);
   opacity: 1;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin: 40px 0 20px 0;
+}
+
+.controls li {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  transition: .3s;
+  transform: scale(.8);
+}
+
+.controls li.active {
+  transform: scale(1);
 }

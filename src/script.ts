@@ -1,6 +1,5 @@
 import Slide from './slide';
 
-const slide = new Slide('.slide-container', '.slide');
+const slide = new Slide('.slide-container', '.slide', '.controls');
 slide.init();
-
-console.log(slide);
+slide.connectControls();
