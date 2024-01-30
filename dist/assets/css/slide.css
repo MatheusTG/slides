@@ -1,7 +1,7 @@
 .slide-container {
   overflow: hidden;
   margin-top: 40px;
-  padding: 40px;
+  padding: 40px 0;
 }
 
 .slide {

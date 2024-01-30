@@ -2,6 +2,32 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/debounce.ts":
+/*!*************************!*\
+  !*** ./src/debounce.ts ***!
+  \*************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ debounce)
+/* harmony export */ });
+function debounce(callback, delay) {
+  var timer;
+  return function () {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(function () {
+      callback.apply(void 0, args);
+      timer = null;
+    }, delay);
+  };
+}
+
+/***/ }),
+
 /***/ "./src/slide.ts":
 /*!**********************!*\
   !*** ./src/slide.ts ***!
@@ -15,6 +41,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
 /* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
+/* harmony import */ var _debounce__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./debounce */ "./src/debounce.ts");
+
 
 
 
@@ -35,8 +63,8 @@ var Slide = /*#__PURE__*/function () {
     };
     this.index = {
       prev: 0,
-      active: 1,
-      next: 2
+      active: 0,
+      next: 0
     };
     this.slideArray = [];
   }
@@ -90,7 +118,7 @@ var Slide = /*#__PURE__*/function () {
       this.dist.currentPosition += this.dist.movement;
       var eventType = event instanceof MouseEvent ? 'mousemove' : 'touchmove';
       (_this$container2 = this.container) === null || _this$container2 === void 0 || _this$container2.removeEventListener(eventType, this.onMove);
-      if (this.dist.movement > 80) this.prev();else if (this.dist.movement < -80) this.next();else this.activeSlide(this.index.active);
+      if (this.dist.movement > 120) this.prev();else if (this.dist.movement < -120) this.next();else this.activeSlide(this.index.active);
     }
   }, {
     key: "addSlideEvents",
@@ -102,17 +130,26 @@ var Slide = /*#__PURE__*/function () {
       (_this$container6 = this.container) === null || _this$container6 === void 0 || _this$container6.addEventListener('touchend', this.onEnd);
     }
   }, {
+    key: "slideIndex",
+    value: function slideIndex(index) {
+      this.index.prev = index - 1;
+      this.index.active = index;
+      this.index.next = index + 1;
+    }
+  }, {
     key: "slidePostion",
     value: function slidePostion() {
       var _this = this;
       if (this.slide) {
         var slides = Array.from(this.slide.children);
         slides.forEach(function (slide, index) {
-          var slideSpace = (window.innerWidth - slide.offsetWidth) / 2;
-          _this.slideArray[index] = {
-            element: slide,
-            position: slideSpace + slide.offsetLeft * -1
-          };
+          if (_this.container) {
+            var slideSpace = (_this.container.offsetWidth - slide.offsetWidth) / 2;
+            _this.slideArray[index] = {
+              element: slide,
+              position: slideSpace + slide.offsetLeft * -1
+            };
+          }
         });
       }
     }
@@ -126,15 +163,13 @@ var Slide = /*#__PURE__*/function () {
         return item.element.classList.remove('active');
       });
       slide.element.classList.add('active');
+      this.slideIndex(index);
     }
   }, {
     key: "prev",
     value: function prev() {
       if (this.index.prev) {
         this.activeSlide(this.index.prev);
-        this.index.prev -= 1;
-        this.index.active -= 1;
-        this.index.next -= 1;
       } else {
         this.activeSlide(this.index.active);
       }
@@ -144,12 +179,23 @@ var Slide = /*#__PURE__*/function () {
     value: function next() {
       if (this.index.next <= this.slideArray.length) {
         this.activeSlide(this.index.next);
-        this.index.prev += 1;
-        this.index.active += 1;
-        this.index.next += 1;
       } else {
         this.activeSlide(this.index.active);
       }
+    }
+  }, {
+    key: "onResize",
+    value: function onResize() {
+      var _this2 = this;
+      setTimeout(function () {
+        _this2.slidePostion();
+        _this2.activeSlide(_this2.index.active);
+      }, 1000);
+    }
+  }, {
+    key: "addResizeEvent",
+    value: function addResizeEvent() {
+      window.addEventListener('resize', this.onResize);
     }
   }, {
     key: "bindEvents",
@@ -157,6 +203,7 @@ var Slide = /*#__PURE__*/function () {
       this.onStart = this.onStart.bind(this);
       this.onEnd = this.onEnd.bind(this);
       this.onMove = this.onMove.bind(this);
+      this.onResize = (0,_debounce__WEBPACK_IMPORTED_MODULE_3__["default"])(this.onResize.bind(this), 200);
     }
   }, {
     key: "init",
@@ -166,6 +213,7 @@ var Slide = /*#__PURE__*/function () {
       this.slidePostion();
       this.activeSlide(3);
       this.transition(true);
+      this.addResizeEvent();
       return this;
     }
   }]);
