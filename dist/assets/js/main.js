@@ -54,7 +54,7 @@ var Slide = /*#__PURE__*/function () {
       } else if (event instanceof TouchEvent) {
         pointerPosition = event.changedTouches[0].clientX;
       }
-      this.dist.movement = (this.dist.startX - pointerPosition) * -1;
+      this.dist.movement = (this.dist.startX - pointerPosition) * -1.6;
       this.moveSlide(this.dist.currentPosition + this.dist.movement);
     }
   }, {
@@ -77,6 +77,8 @@ var Slide = /*#__PURE__*/function () {
       this.dist.currentPosition += this.dist.movement;
       var eventType = event instanceof MouseEvent ? 'mousemove' : 'touchmove';
       (_this$container2 = this.container) === null || _this$container2 === void 0 || _this$container2.removeEventListener(eventType, this.onMove);
+      if (this.dist.movement > 80) this.prev();
+      if (this.dist.movement < -80) this.next();
     }
   }, {
     key: "addSlideEvents",
@@ -108,6 +110,30 @@ var Slide = /*#__PURE__*/function () {
       var position = this.slideArray[index - 1].position;
       this.moveSlide(position);
       this.dist.currentPosition = position;
+    }
+  }, {
+    key: "prev",
+    value: function prev() {
+      if (this.index.prev) {
+        this.activeSlide(this.index.prev);
+        this.index.prev -= 1;
+        this.index.active -= 1;
+        this.index.next -= 1;
+      } else {
+        this.activeSlide(this.index.active);
+      }
+    }
+  }, {
+    key: "next",
+    value: function next() {
+      if (this.index.next <= this.slideArray.length) {
+        this.activeSlide(this.index.next);
+        this.index.prev += 1;
+        this.index.active += 1;
+        this.index.next += 1;
+      } else {
+        this.activeSlide(this.index.active);
+      }
     }
   }, {
     key: "bindEvents",

@@ -41,7 +41,7 @@ export default class Slide {
       pointerPosition = event.changedTouches[0].clientX;
     }
 
-    this.dist.movement = (this.dist.startX - pointerPosition!) * -1;
+    this.dist.movement = (this.dist.startX - pointerPosition!) * -1.6;
     this.moveSlide(this.dist.currentPosition + this.dist.movement);
   }
 
@@ -63,6 +63,9 @@ export default class Slide {
 
     const eventType = event instanceof MouseEvent ? 'mousemove' : 'touchmove';
     this.container?.removeEventListener(eventType, this.onMove);
+
+    if (this.dist.movement > 80) this.prev();
+    if (this.dist.movement < -80) this.next();
   }
 
   // Adiciona os eventos para o mevimento do slide
@@ -92,6 +95,28 @@ export default class Slide {
     const position = this.slideArray[index - 1].position;
     this.moveSlide(position);
     this.dist.currentPosition = position;
+  }
+
+  prev() {
+    if (this.index.prev) {
+      this.activeSlide(this.index.prev);
+      this.index.prev -= 1;
+      this.index.active -= 1;
+      this.index.next -= 1;
+    } else {
+      this.activeSlide(this.index.active);
+    }
+  }
+
+  next() {
+    if (this.index.next <= this.slideArray.length) {
+      this.activeSlide(this.index.next);
+      this.index.prev += 1;
+      this.index.active += 1;
+      this.index.next += 1;
+    } else {
+      this.activeSlide(this.index.active);
+    }
   }
 
   bindEvents() {
