@@ -24,6 +24,8 @@ var Slide = /*#__PURE__*/function () {
     (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_2__["default"])(this, "container", void 0);
     (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_2__["default"])(this, "slide", void 0);
     (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_2__["default"])(this, "dist", void 0);
+    (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_2__["default"])(this, "index", void 0);
+    (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_2__["default"])(this, "slideArray", void 0);
     this.container = document.querySelector(container);
     this.slide = document.querySelector(slide);
     this.dist = {
@@ -31,11 +33,17 @@ var Slide = /*#__PURE__*/function () {
       movement: 0,
       currentPosition: 0
     };
+    this.index = {
+      prev: 0,
+      active: 1,
+      next: 2
+    };
+    this.slideArray = [];
   }
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(Slide, [{
     key: "moveSlide",
-    value: function moveSlide() {
-      this.slide.style.transform = "translate3d(".concat(this.dist.currentPosition + this.dist.movement, "px, 0, 0)");
+    value: function moveSlide(distX) {
+      this.slide.style.transform = "translate3d(".concat(distX, "px, 0, 0)");
     }
   }, {
     key: "onMove",
@@ -47,7 +55,7 @@ var Slide = /*#__PURE__*/function () {
         pointerPosition = event.changedTouches[0].clientX;
       }
       this.dist.movement = (this.dist.startX - pointerPosition) * -1;
-      this.moveSlide();
+      this.moveSlide(this.dist.currentPosition + this.dist.movement);
     }
   }, {
     key: "onStart",
@@ -80,6 +88,28 @@ var Slide = /*#__PURE__*/function () {
       (_this$container6 = this.container) === null || _this$container6 === void 0 || _this$container6.addEventListener('touchend', this.onEnd);
     }
   }, {
+    key: "slidePostion",
+    value: function slidePostion() {
+      var _this = this;
+      if (this.slide) {
+        var slides = Array.from(this.slide.children);
+        slides.forEach(function (slide, index) {
+          var slideSpace = (window.innerWidth - slide.offsetWidth) / 2;
+          _this.slideArray[index] = {
+            element: slide,
+            position: slideSpace + slide.offsetLeft * -1
+          };
+        });
+      }
+    }
+  }, {
+    key: "activeSlide",
+    value: function activeSlide(index) {
+      var position = this.slideArray[index - 1].position;
+      this.moveSlide(position);
+      this.dist.currentPosition = position;
+    }
+  }, {
     key: "bindEvents",
     value: function bindEvents() {
       this.onStart = this.onStart.bind(this);
@@ -91,6 +121,9 @@ var Slide = /*#__PURE__*/function () {
     value: function init() {
       this.bindEvents();
       this.addSlideEvents();
+      this.slidePostion();
+      this.activeSlide(1);
+      return this;
     }
   }]);
   return Slide;
