@@ -64,6 +64,7 @@ var Slide = /*#__PURE__*/function () {
     (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6__["default"])(this, "dist", void 0);
     (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6__["default"])(this, "index", void 0);
     (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6__["default"])(this, "slideArray", void 0);
+    (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6__["default"])(this, "changeEvent", void 0);
     this.container = document.querySelector(container);
     this.slide = document.querySelector(slide);
     this.dist = {
@@ -72,11 +73,12 @@ var Slide = /*#__PURE__*/function () {
       currentPosition: 0
     };
     this.index = {
-      prev: 0,
-      active: 0,
-      next: 0
+      prev: 2,
+      active: 3,
+      next: 4
     };
     this.slideArray = [];
+    this.changeEvent = new Event('changeEvent');
   }
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__["default"])(Slide, [{
     key: "transition",
@@ -166,6 +168,7 @@ var Slide = /*#__PURE__*/function () {
   }, {
     key: "activeSlide",
     value: function activeSlide(index) {
+      var _this$container7;
       var slide = this.slideArray[index - 1];
       this.moveSlide(slide.position);
       this.dist.currentPosition = slide.position;
@@ -174,6 +177,7 @@ var Slide = /*#__PURE__*/function () {
       });
       slide.element.classList.add('active');
       this.slideIndex(index);
+      (_this$container7 = this.container) === null || _this$container7 === void 0 || _this$container7.dispatchEvent(this.changeEvent);
     }
   }, {
     key: "prev",
@@ -243,13 +247,16 @@ var SlideConfig = /*#__PURE__*/function (_Slide2) {
       _this3.controls = Array.from((_this3$controlsContai = _this3.controlsContainer) === null || _this3$controlsContai === void 0 ? void 0 : _this3$controlsContai.children);
     } else _this3.controls = null;
     _this3.bindControlEvents();
+    _this3.addActiveControl();
     return _this3;
   }
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__["default"])(SlideConfig, [{
     key: "connectControls",
     value: function connectControls() {
       if (this.controls) {
+        var _this$container8;
         this.addControlsEvent();
+        (_this$container8 = this.container) === null || _this$container8 === void 0 || _this$container8.addEventListener('changeEvent', this.addActiveControl);
       }
     }
   }, {
@@ -264,25 +271,33 @@ var SlideConfig = /*#__PURE__*/function (_Slide2) {
       }
     }
   }, {
+    key: "addActiveControl",
+    value: function addActiveControl() {
+      var _this$controls;
+      if ((_this$controls = this.controls) !== null && _this$controls !== void 0 && _this$controls.length) {
+        this.controls.forEach(function (element) {
+          return element.classList.remove('active');
+        });
+        this.controls[this.index.active - 1].classList.add('active');
+      }
+    }
+  }, {
     key: "onClickControl",
     value: function onClickControl(event) {
       var element = event.currentTarget;
       if (element instanceof HTMLElement) {
-        var _this$controls, _this$controls2;
-        var index = (_this$controls = this.controls) === null || _this$controls === void 0 ? void 0 : _this$controls.indexOf(element);
+        var _this$controls2;
+        var index = (_this$controls2 = this.controls) === null || _this$controls2 === void 0 ? void 0 : _this$controls2.indexOf(element);
         if (index !== undefined) {
           this.activeSlide(index + 1);
         }
-        (_this$controls2 = this.controls) === null || _this$controls2 === void 0 || _this$controls2.forEach(function (control) {
-          return control.classList.remove('active');
-        });
-        element.classList.add('active');
       }
     }
   }, {
     key: "bindControlEvents",
     value: function bindControlEvents() {
       this.onClickControl = this.onClickControl.bind(this);
+      this.addActiveControl = this.addActiveControl.bind(this);
     }
   }]);
   return SlideConfig;
@@ -620,7 +635,6 @@ __webpack_require__.r(__webpack_exports__);
 var slide = new _slide__WEBPACK_IMPORTED_MODULE_0__["default"]('.slide-container', '.slide', '.controls');
 slide.init();
 slide.connectControls();
-console.log(slide);
 })();
 
 /******/ })()

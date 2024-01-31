@@ -19,6 +19,7 @@ class Slide {
     next: number; // Index do próximo slide
   };
   slideArray: SlideArrayItem[];
+  changeEvent: Event;
   constructor(container: string, slide: string) {
     this.container = document.querySelector(container);
     this.slide = document.querySelector(slide);
@@ -27,8 +28,10 @@ class Slide {
       movement: 0,
       currentPosition: 0,
     };
-    this.index = { prev: 0, active: 0, next: 0 };
+    this.index = { prev: 2, active: 3, next: 4 };
     this.slideArray = [];
+
+    this.changeEvent = new Event('changeEvent');
   }
 
   transition(active: boolean) {
@@ -127,6 +130,8 @@ class Slide {
     slide.element.classList.add('active');
 
     this.slideIndex(index);
+
+    this.container?.dispatchEvent(this.changeEvent);
   }
 
   prev() {
@@ -190,11 +195,14 @@ export default class SlideConfig extends Slide {
     } else this.controls = null;
 
     this.bindControlEvents();
+
+    this.addActiveControl();
   }
 
   connectControls() {
     if (this.controls) {
       this.addControlsEvent();
+      this.container?.addEventListener('changeEvent', this.addActiveControl);
     }
   }
 
@@ -207,6 +215,13 @@ export default class SlideConfig extends Slide {
     }
   }
 
+  addActiveControl() {
+    if (this.controls?.length) {
+      this.controls.forEach((element) => element.classList.remove('active'));
+      this.controls[this.index.active - 1].classList.add('active');
+    }
+  }
+
   onClickControl(event: Event) {
     const element = event.currentTarget;
     if (element instanceof HTMLElement) {
@@ -214,13 +229,11 @@ export default class SlideConfig extends Slide {
       if (index !== undefined) {
         this.activeSlide(index + 1);
       }
-
-      this.controls?.forEach((control) => control.classList.remove('active'));
-      element.classList.add('active');
     }
   }
 
   bindControlEvents() {
     this.onClickControl = this.onClickControl.bind(this);
+    this.addActiveControl = this.addActiveControl.bind(this);
   }
 }

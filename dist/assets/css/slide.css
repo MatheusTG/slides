@@ -1,5 +1,6 @@
 .slide-container {
   overflow: hidden;
+  padding-bottom: 80px;
 }
 
 .slide {
